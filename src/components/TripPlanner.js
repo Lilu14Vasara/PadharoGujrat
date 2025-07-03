@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const TripPlanner = () => {
   const [tripName, setTripName] = useState("");
   const [tripPlan, setTripPlan] = useState([{ time: "", place: "", notes: "" }]);
@@ -17,7 +19,7 @@ const TripPlanner = () => {
 
   const fetchTrips = async (token) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/trips", {
+      const response = await axios.get(`${API_URL}/api/trips`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTrips(response.data);
@@ -27,7 +29,7 @@ const TripPlanner = () => {
   };
 
   const handleAddRow = () => {
-    setTripPlan([...tripPlan, { time: "", place: "" }]);
+    setTripPlan([...tripPlan, { time: "", place: "", notes: "" }]);
   };
 
   const handleRemoveRow = (index) => {
@@ -48,14 +50,14 @@ const TripPlanner = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/trips",
+      await axios.post(
+        `${API_URL}/api/trips`,
         { tripName, plan: tripPlan },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       alert("Trip saved successfully!");
-      setTripPlan([{ time: "", place: "" }]);
+      setTripPlan([{ time: "", place: "", notes: "" }]);
       setTripName("");
       fetchTrips(token);
     } catch (error) {
@@ -66,7 +68,7 @@ const TripPlanner = () => {
 
   const handleDeleteTrip = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/trips/${id}`, {
+      await axios.delete(`${API_URL}/api/trips/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchTrips(token);
@@ -116,16 +118,19 @@ const TripPlanner = () => {
                   onChange={(e) => handleChange(index, "place", e.target.value)}
                 />
               </td>
-              <td className="border p-2"> {/* ✅ Added Notes Input */}
-          <input
-            type="text"
-            className="w-full p-1 border rounded"
-            value={row.notes}
-            onChange={(e) => handleChange(index, "notes", e.target.value)}
-           />
-         </td>
               <td className="border p-2">
-                <button className="bg-red-500 text-white px-3 py-1 rounded" onClick={() => handleRemoveRow(index)}>
+                <input
+                  type="text"
+                  className="w-full p-1 border rounded"
+                  value={row.notes}
+                  onChange={(e) => handleChange(index, "notes", e.target.value)}
+                />
+              </td>
+              <td className="border p-2">
+                <button
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                  onClick={() => handleRemoveRow(index)}
+                >
                   X
                 </button>
               </td>
@@ -134,49 +139,54 @@ const TripPlanner = () => {
         </tbody>
       </table>
 
-      <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded" onClick={handleAddRow}>
-        Add Row
-      </button>
-
-      <button className="mt-2 ml-4 bg-green-500 text-white px-4 py-2 rounded" onClick={handleSubmit}>
-        Save Trip
-      </button>
+      <div className="mt-4">
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded mr-4"
+          onClick={handleAddRow}
+        >
+          Add Row
+        </button>
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded"
+          onClick={handleSubmit}
+        >
+          Save Trip
+        </button>
+      </div>
 
       <h3 className="text-xl font-bold mt-6">Your Trips</h3>
-{trips.map((trip) => (
-  <div key={trip._id} className="p-4 border my-4 rounded-lg shadow-md">
-    <strong className="text-lg font-semibold">{trip.tripName}</strong>
 
-    {/* Table to show trip details */}
-    <table className="w-full border-collapse mt-2">
-      <thead>
-        <tr className="bg-gray-200">
-          <th className="border p-2">Time</th>
-          <th className="border p-2">Place</th>
-          <th className="border p-2">Notes</th>
-        </tr>
-      </thead>
-      <tbody>
-        {trip.plan.map((item, index) => (
-          <tr key={index} className="border">
-            <td className="border p-2">{item.time}</td>
-            <td className="border p-2">{item.place}</td>
-            <td className="border p-2">{item.notes}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+      {trips.map((trip) => (
+        <div key={trip._id} className="p-4 border my-4 rounded-lg shadow-md">
+          <strong className="text-lg font-semibold">{trip.tripName}</strong>
 
-    {/* Delete Button */}
-    <button
-      className="mt-2 bg-red-500 text-white px-3 py-1 rounded"
-      onClick={() => handleDeleteTrip(trip._id)}
-    >
-      Delete
-    </button>
-  </div>
-))}
+          <table className="w-full border-collapse mt-2">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border p-2">Time</th>
+                <th className="border p-2">Place</th>
+                <th className="border p-2">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trip.plan.map((item, index) => (
+                <tr key={index}>
+                  <td className="border p-2">{item.time}</td>
+                  <td className="border p-2">{item.place}</td>
+                  <td className="border p-2">{item.notes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
+          <button
+            className="mt-2 bg-red-500 text-white px-3 py-1 rounded"
+            onClick={() => handleDeleteTrip(trip._id)}
+          >
+            Delete
+          </button>
+        </div>
+      ))}
     </div>
   );
 };

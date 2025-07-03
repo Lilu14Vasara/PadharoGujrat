@@ -7,11 +7,11 @@ const Favorites = () => {
   const [description, setDescription] = useState("");
   const [favorites, setFavorites] = useState([]);
   const token = localStorage.getItem("token");
-
+  const API_URL = import.meta.env.VITE_API_URL;
   // Fetch user's favorite places
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/favorites", {
+      .get(`${API_URL}/api/favorites`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setFavorites(res.data))

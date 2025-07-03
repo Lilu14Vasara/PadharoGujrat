@@ -6,6 +6,8 @@ const Signup = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL; // ✅ Backend URL from env
+
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
@@ -15,7 +17,7 @@ const Signup = () => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
@@ -23,8 +25,8 @@ const Signup = () => {
 
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem("token", data.token); // Save token in local storage
-        navigate("/login"); // Redirect user
+        localStorage.setItem("token", data.token);
+        navigate("/login");
       } else {
         setError(data.message || "Signup failed. Try again.");
       }
@@ -37,9 +39,7 @@ const Signup = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
         <h2 className="text-3xl font-bold text-center text-green-800 mb-6">Signup</h2>
-
         {error && <p className="text-red-600 text-center mb-4">{error}</p>}
-
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -72,7 +72,6 @@ const Signup = () => {
             Signup
           </button>
         </form>
-
         <p className="text-center text-gray-600 mt-4">
           Already have an account?{" "}
           <Link to="/login" className="text-green-600 font-bold hover:underline">Login</Link>

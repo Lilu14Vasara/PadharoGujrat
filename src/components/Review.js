@@ -22,10 +22,10 @@ const Review = () => {
   useEffect(() => {
     fetchReviews();
   }, []);
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const fetchReviews = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/reviews");
+      const response = await axios.get(`${API_URL}/api/reviews`);
       setReviews(response.data);
     } catch (error) {
       console.error("Error fetching reviews:", error.response?.data || error.message);
