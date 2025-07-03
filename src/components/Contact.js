@@ -21,7 +21,8 @@ const Contact = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = process.env.REACT_APP_API_URL;
+
 
     try {
       const res = await fetch(`${API_URL}/api/contact`, {

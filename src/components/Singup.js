@@ -6,7 +6,8 @@ const Signup = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL; // ✅ Backend URL from env
+  const API_URL = process.env.REACT_APP_API_URL;
+
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
