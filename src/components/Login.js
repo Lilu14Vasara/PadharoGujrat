@@ -10,6 +10,8 @@ const Login = () => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
   const API_URL = process.env.REACT_APP_API_URL;
+  console.log("API_URL:", process.env.REACT_APP_API_URL);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
