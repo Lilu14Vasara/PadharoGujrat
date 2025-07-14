@@ -209,7 +209,7 @@ const districts = [
   {
     name: "Jamnagar",
     description: "A city of temples and brass industries, Jamnagar is known for its marine sanctuary and rich cultural heritage.",
-    image: "/image/jamnagar.jpg",
+    image: "/image/Jamnagar.jpg",
     famousPlaces: [
       {
         name: "Lakhota Lake & Palace",
